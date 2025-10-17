@@ -1,0 +1,40 @@
+services:
+  chat-frontend:
+    image: eyepatch5263/chat-frontend
+    ports:
+      - "4000:80"
+    networks:
+      - eye-network
+    depends_on:
+    - chat-backend
+  
+  chat-backend:
+    image: eyepatch5263/chat-backend
+    ports:
+      - "8000:8000"
+    networks:
+      - eye-network
+    env_file:
+      - ./backend/.env
+    depends_on:
+    - mongo
+  
+  mongo:
+    image: mongo
+    restart: always
+    volumes:
+      - mongo-data:/data/chatapp
+    networks:
+      - eye-network
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+
+volumes:
+  mongo-data:
+
+networks:
+  eye-network:
+    driver: bridge
